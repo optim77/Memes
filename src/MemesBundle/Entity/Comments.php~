@@ -1,0 +1,63 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NASA
+ * Date: 2017-12-29
+ * Time: 14:36
+ */
+
+namespace MemesBundle\Entity;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * @ORM\Table(name="comments")
+ * @ORM\Entity(repositoryClass="MemesBundle/Repository/CommentsRepository")
+ */
+class Comments
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * ORM\generatedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Memes",
+     *     inversedBy="comments"
+     * )
+     * @ORM\JoinColumn(
+     *     name="id_mem",
+     *     referencedColumnName ="id",
+     *     onDelete="SET NULL"
+     * )
+     */
+    private $mem;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Users",
+     *      inversedBy="comments"
+     * )
+     * @ORM\JoinColumn(
+     *     name="author",
+     *     referencedColumnName ="id",
+     *     onDelete="SET NULL"
+     * )
+     */
+    private $author;
+
+    /**
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank
+     */
+    private $content;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $date;
+
+}
