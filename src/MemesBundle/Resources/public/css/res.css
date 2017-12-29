@@ -1,0 +1,15 @@
+body{
+    font-family: 'Lato', sans-serif;
+    background: #000;
+}
+.btn{
+    border-radius: 0%;
+}
+.soloCard{
+    width:100%;
+    margin-right: auto;
+    margin-left: auto;
+}
+.black{
+    background-color: #00;
+}
