@@ -1,0 +1,19 @@
+{% extends "Base/Base.html.twig" %}
+{% form_theme form "FormStyles/MainForm.html.twig" %}
+{% block topAd %}
+    <div class="container p-5">
+        <p class="text-center text-white display-2 text-uppercase">Add mem</p>
+    </div>
+{% endblock %}
+{% block content %}
+
+
+    <div class="container text-white">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
+{% block pages %}{% endblock %}
+{% block footer %}{% endblock %}

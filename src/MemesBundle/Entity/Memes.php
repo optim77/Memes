@@ -10,28 +10,39 @@
 namespace MemesBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Table(name="memes")
- * @ORM\Entity(repositoryClass="MemesBundle/Repository/MemesRepository")
+ * @ORM\Entity(repositoryClass="MemesBundle\Repository\MemesRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Memes
 {
 
+    const UPLOAD_DIR = "uploads/memes/";
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
-     * ORM\generatedValue(strategy="AUTO")
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=80)
+     * @ORM\Column(type="string", length=50)
      * @Assert\NotBlank
      */
-    private $image;
+    private $title;
 
     /**
+     * @ORM\Column(type="string", length=80)
+     */
+    private $image = null;
+
+    /**
+     * @var UploadedFile
+     *
      * @Assert\Image(
      *     minWidth=50,
      *     maxWidth=1500,
@@ -42,25 +53,34 @@ class Memes
      */
     private $imageFile;
 
+    /**
+     * @return UploadedFile
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param UploadedFile $imageFile
+     */
+    public function setImageFile($imageFile)
+    {
+        $this->imageFile = $imageFile;
+    }
+
 
     private $imtTmp;
 
     /**
      * @ORM\Column(type="string", length=80)
-     * @Assert\NotBlank
      */
     private $slug;
 
     /**
-     * @ORM\ManyToOne(
-     *      targetEntity="Users",
-     *      inversedBy="actions"
-     * )
-     * @ORM\JoinColumn(
-     *     name="user_id",
-     *     referencedColumnName="id",
-     *     onDelete="SET NULL"
-     * )
+     * @ORM\Column(type="string", length=30)
+     * @Assert\NotBlank
+     * @Assert\Length(min=2, max=30)
      */
     private $author;
 
@@ -210,29 +230,7 @@ class Memes
         return $this->rateNegative;
     }
 
-    /**
-     * Set author
-     *
-     * @param \MemesBundle\Entity\Users $author
-     *
-     * @return Memes
-     */
-    public function setAuthor(\MemesBundle\Entity\Users $author = null)
-    {
-        $this->author = $author;
 
-        return $this;
-    }
-
-    /**
-     * Get author
-     *
-     * @return \MemesBundle\Entity\Users
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
 
     /**
      * Add comment
@@ -266,5 +264,87 @@ class Memes
     public function getComments()
     {
         return $this->comments;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function preSave(){
+        if(null != $this->getImageFile()){
+            if(null !== $this->image){
+                $this->imageTemp = $this->image;
+            }
+            $imageName = sha1(uniqid(null,true));
+            $this->image = $imageName.'.'.$this->getImageFile()->guessExtension();
+        }
+    }
+
+    /**
+     * @ORM\PostPersist
+     * @ORM\PostUpdate
+     */
+    public function postSave(){
+        if(null !== $this->getImageFile()) {
+            $this->getImageFile()->move($this->getUploadRootDir(), $this->image);
+            unset($this->imageFile);
+        }
+
+            if(null !== $this->imtTmp){
+                unlink($this->getUploadRootDir().$this->imtTmp);
+                unset($this->imtTmp);
+            }
+    }
+
+    public function getUploadRootDir(){
+        return __DIR__.'/../../../web/bundles/uploads/memes';
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     *
+     * @return Memes
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set author
+     *
+     * @param string $author
+     *
+     * @return Memes
+     */
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get author
+     *
+     * @return string
+     */
+    public function getAuthor()
+    {
+        return $this->author;
     }
 }

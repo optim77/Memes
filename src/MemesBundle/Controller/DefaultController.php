@@ -14,5 +14,9 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+        $SuccessMessages = $this->get('session')->getFlashBag()->get('success',array());
+        return array(
+            'SuccessMessages' => $SuccessMessages ? $SuccessMessages : null
+        );
     }
 }

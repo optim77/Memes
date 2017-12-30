@@ -9,13 +9,14 @@
 namespace MemesBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
 /**
  * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="MemesBundle/Repository/UsersRepository")
+ * @ORM\Entity(repositoryClass="MemesBundle\Repository\UsersRepository")
  */
 class Users
 {
+
+    const UPLOAD_DIR = 'bundles/uploads';
 
     /**
      * @ORM\Column(type="integer")
@@ -43,25 +44,31 @@ class Users
     private $ip;
 
     /**
+     * @ORM\Column(type="string", length=20)
+     * @Assert\NotBlank
+     */
+    private $ip2;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $firstActivity;
 
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Memes",
-     *     mappedBy="author"
-     * )
-     */
-    private $actions;
+//    /**
+//     * @ORM\OneToMany(
+//     *     targetEntity="Memes",
+//     *     mappedBy="author"
+//     * )
+//     */
+//    protected $actions;
 
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Comments",
-     *     mappedBy="mem"
-     * )
-     */
-    private $comments;
+//    /**
+//     * @ORM\OneToMany(
+//     *     targetEntity="Comments",
+//     *     mappedBy="mem"
+//     * )
+//     */
+//    protected $comments;
 
 
 
@@ -246,5 +253,30 @@ class Users
     public function getComments()
     {
         return $this->comments;
+    }
+
+
+    /**
+     * Set ip2
+     *
+     * @param string $ip2
+     *
+     * @return Users
+     */
+    public function setIp2($ip2)
+    {
+        $this->ip2 = $ip2;
+
+        return $this;
+    }
+
+    /**
+     * Get ip2
+     *
+     * @return string
+     */
+    public function getIp2()
+    {
+        return $this->ip2;
     }
 }

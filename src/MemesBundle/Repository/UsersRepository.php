@@ -13,4 +13,18 @@ use MemesBundle\Entity\Users;
 class UsersRepository extends EntityRepository
 {
 
+    public function getQueryBuilder(array $params = array()){
+        $qb = $this->createQueryBuilder('u')
+            ->select('u');
+    }
+
+    public function getAuthor($slug){
+        $qb = $this->createQueryBuilder('u')
+            ->select('u')
+            ->where('u.slug = :slug')
+            ->setParameter('slug',$slug);
+
+        $qb->getQuery()->getResult();
+    }
+
 }
