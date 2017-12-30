@@ -70,53 +70,34 @@
         {% endblock %}
 
         {% block content %}
+
+
         <div class="container">
+            {% for mem in memes %}
+                <div class="container mb-5">
+                    <div class="card soloCard col-md-8">
+                        <p class="h3 text-uppercase text-center mb-0">{{ mem.title }}</p>
+                        <div class="card-body">
+                            <img class="card-img-top" src="{{ asset('bundles/uploads/memes/'~mem.image) }}">
+                        </div>
 
+                    </div>
+                </div>
+            {% endfor %}
             {% block elements %}
-                <div class="container mb-5">
-                    <div class="card soloCard col-md-8">
-                        <p class="h3 text-uppercase text-center mb-0">Title</p>
-                        <div class="card-body">
-                            <img class="card-img-top" src="https://assets.vogue.com/photos/5891c91ece34fb453af7d263/master/pass/06-kendrick-llama-memes.jpg">
-                        </div>
 
-                    </div>
-                </div>
 
-                <div class="container mb-5">
-                    <div class="card soloCard col-md-8">
-                        <p class="h3 text-uppercase text-center mb-0">Title</p>
-                        <div class="card-body">
-                            <img class="card-img-top" src="https://assets.vogue.com/photos/5891c91ece34fb453af7d263/master/pass/06-kendrick-llama-memes.jpg">
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="container mb-5">
-                    <div class="card soloCard col-md-8">
-                        <p class="h3 text-uppercase text-center mb-0">Title</p>
-                        <div class="card-body">
-                            <img class="card-img-top" src="https://assets.vogue.com/photos/5891c91ece34fb453af7d263/master/pass/06-kendrick-llama-memes.jpg">
-                        </div>
-
-                    </div>
-                </div>
             {% endblock %}
 
         </div>
         {% endblock %}
 
         {% block pages %}
+
         <div class="container mb-5">
             <div class="btn-group" role="group" aria-label="pagination">
-                <button type="button" class="btn btn-lg btn-dark active">1</button>
-                <button type="button" class="btn btn-lg btn-dark">2</button>
-                <button type="button" class="btn btn-lg btn-dark">3</button>
-                <button type="button" class="btn btn-lg btn-dark">4</button>
-                <button type="button" class="btn btn-lg btn-dark">5</button>
-                <button type="button" class="btn btn-lg btn-dark">6</button>
-                <button type="button" class="btn btn-lg btn-dark">7</button>
+
+                {{ knp_pagination_render(memes) }}
             </div>
         </div>
         {% endblock %}

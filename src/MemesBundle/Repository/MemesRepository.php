@@ -13,4 +13,11 @@ use MemesBundle\Entity\Memes;
 class MemesRepository extends EntityRepository
 {
 
+    public function getQueryBuilder(array $params = array()){
+        $qb = $this->createQueryBuilder('m')
+            ->select('m');
+
+        return $qb->getQuery()->getResult();
+    }
+
 }
