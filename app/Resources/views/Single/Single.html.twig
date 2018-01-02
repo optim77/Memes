@@ -1,0 +1,80 @@
+{% extends "Base/Base.html.twig" %}
+
+{% block content %}
+
+    {% if view is defined and view is not null %}
+
+        {% if view.type == 'phrase' %}
+
+            <div class="container">
+
+                <p class="text-white">{{ view.author }}</p>
+                {{ view.phraseText|raw }}
+
+                <div class="container">
+                    <p class="text-white">Join to discussion</p>
+                    <form action="{{ path('add-comment') }}" method="post" class="form-group">
+                        <textarea name="comment" cols="50" rows="3" class="form-control"></textarea>
+                        <input type="button" class="btn btn-primary mt-2" value="Comment" >
+                    </form>
+                </div>
+                <hr>
+
+                {% for comment in view.comments %}
+                    <div class="container text-white">
+                        <div class="media-body">
+                            <h5>{{ comment.author }}</h5>
+                            <p>{{ comment.content }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+        {% if view.type == 'mem' %}
+
+            <div class="container">
+
+                <div class="container mb-5">
+                    <p class="text-white">{{ view.author }}</p>
+                    <div class="card soloCard col-md-8 black">
+                        <p class="h3 text-uppercase text-center mb-0 text-white">{{ view.title }}</p>
+                        <div class="card-body">
+                            <img class="card-img-top rounded" src="{{ asset('bundles/memes/uploads/'~view.image) }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <p class="text-white">Join to discussion</p>
+                    <form action="{{ path('add-comment') }}" method="post" class="form-group">
+                        <textarea name="comment" cols="50" rows="3" class="form-control"></textarea>
+                        <input type="button" class="btn btn-primary mt-2" value="Comment" >
+                    </form>
+                </div>
+                <hr>
+
+                {% for comment in view.comments %}
+                    <div class="container text-white">
+                        <div class="media-body">
+                            <h5>{{ comment.author }}</h5>
+                            <p>{{ comment.content }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+
+{% endblock %}
+
+{% block pages %}
+{% endblock %}
+{% block footer %}
+{% endblock %}

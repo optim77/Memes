@@ -124,7 +124,7 @@ class Memes
     /**
      * @ORM\OneToMany(
      *     targetEntity="Comments",
-     *     mappedBy="authors"
+     *     mappedBy="mem"
      * )
      */
     private $comments;

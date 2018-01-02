@@ -254,4 +254,10 @@ class ConstantValues
         '#dd2c00'
     );
 
+    public function getOne(){
+
+        return ConstantValues::COLORS[mt_rand(0, count(ConstantValues::COLORS) - 1)];
+
+    }
+
 }

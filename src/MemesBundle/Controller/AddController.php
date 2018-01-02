@@ -72,7 +72,8 @@ class AddController extends Controller
                 return $this->redirectToRoute('add-phrase');
             }
             //$backgroundColor =  array_rand(AddController::COLORS,1);
-            $backgroundColor = ConstantValues::COLORS[mt_rand(0,count(ConstantValues::COLORS) - 1)];
+            $Colors = new ConstantValues();
+            $backgroundColor = $Colors->getOne();
             $text = '<div class="card text-center soloCard mb-5 col-md-8 p-5" style="background-color: '.$backgroundColor.'" ><div class="card-block"><h4 class="card-title">'.$ContentText.'</h4></div></div>';
             $slug = substr($_POST['phraseText'],0,60).uniqid(null,true);
             $slug = self::slugify($slug);

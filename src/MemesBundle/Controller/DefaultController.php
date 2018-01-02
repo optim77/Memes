@@ -26,4 +26,19 @@ class DefaultController extends Controller
             'memes' => $pagination
         );
     }
+
+    /**
+     * @Route("/single/{slug}", name="single")
+     * @Template("Single/Single.html.twig")
+     */
+    public function singleAction($slug){
+
+        $Memes = $this->getDoctrine()->getRepository('MemesBundle:Memes');
+        $qb = $Memes->getSingle($slug);
+        dump($qb);
+        return array(
+            'view' => $qb[0]
+        );
+
+    }
 }

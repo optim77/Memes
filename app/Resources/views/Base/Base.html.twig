@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-        <title>{% block title %}Memems{% endblock %}</title>
+        <title>{% block title %}Memes{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         {% block headComponents %}
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -19,7 +19,7 @@
         {% block navbar %}
             <div class="container-fluid bg-dark">
                 <div class="container">
-                    <nav class="navbar navbar-light navbar-collapse navbar-expand-md">
+                    <nav class="navbar navbar-light navbar-collapse navbar-expand-lg">
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
                             <span class="navbar-toggler-icon"></span>
                         </button>
@@ -74,9 +74,9 @@
 
         <div class="container">
             {% for mem in memes %}
-                {% dump mem %}
                 {% if mem.type == 'mem' %}
                 <div class="container mb-5">
+                    <a href="{{ path('single', {'slug': mem.slug}) }}">
                     <div class="card soloCard col-md-8 black">
                         <p class="h3 text-uppercase text-center mb-0 text-white">{{ mem.title }}</p>
                         <div class="card-body">
@@ -84,11 +84,18 @@
                         </div>
 
                     </div>
+                    </a>
                 </div>
                 {% endif %}
                 {% if mem.type == 'phrase' %}
+                    <div class="container">
+                        <div class="container">
+                            <a class="text-dark" href="{{ path('single', {'slug': mem.slug}) }}">
+                                {{ mem.phraseText|raw }}
+                            </a>
+                        </div>
 
-                    {{ mem.phraseText|raw }}
+                    </div>
 
                 {% endif %}
             {% endfor %}

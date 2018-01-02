@@ -13,3 +13,6 @@ body{
 .black{
     background-color: #000;
 }
+a:hover{
+    text-decoration: none;
+}

@@ -16,7 +16,17 @@ class MemesRepository extends EntityRepository
     public function getQueryBuilder(array $params = array()){
         $qb = $this->createQueryBuilder('m')
             ->select('m')
-            ->orderBy('m.date','ASC');
+            ->orderBy('m.id','DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getSingle($slug){
+        $qb = $this->createQueryBuilder('m')
+            ->select('m,c')
+            ->leftJoin('m.comments','c')
+            ->where('m.slug = :slug')
+            ->setParameter('slug', $slug);
 
         return $qb->getQuery()->getResult();
     }
