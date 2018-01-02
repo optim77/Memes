@@ -19,7 +19,7 @@ class DefaultController extends Controller
         $paginator = $this->get('knp_paginator');
         $Memes = $this->getDoctrine()->getRepository('MemesBundle:Memes');
         $qb = $Memes->getQueryBuilder();
-        $pagination = $paginator->paginate($qb,$page,2);
+        $pagination = $paginator->paginate($qb,$page,5);
         return array(
             'SuccessMessages' => $SuccessMessages ? $SuccessMessages : null,
             array(),
