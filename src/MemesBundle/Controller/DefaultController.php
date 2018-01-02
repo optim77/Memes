@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/memes/{page}", name="index")
+     * @Route("/{page}", name="index")
      * @Template("Base/Base.html.twig")
      */
     public function indexAction(Request $request, $page = 1)

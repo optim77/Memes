@@ -1,18 +1,46 @@
 {% extends "Base/Base.html.twig" %}
-{% form_theme form "FormStyles/MainForm.html.twig" %}
 {% block topAd %}
     <div class="container p-5">
-        <p class="text-center text-white display-2 text-uppercase">Add mem</p>
+        {% if type == 'mem' %}
+            <p class="text-center text-white display-2 text-uppercase">Add mem</p>
+        {% endif %}
+        {% if type == 'phrase' %}
+            <p class="text-center text-white display-2 text-uppercase">Add phrase</p>
+        {% endif %}
     </div>
 {% endblock %}
 {% block content %}
 
 
-    <div class="container text-white">
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        {{ form_end(form) }}
+    <div class="container">
+        {% if Messages is defined and Messages is not null %}
+            <div class="alert alert-danger mt-5 mb-5">{{ Messages[0] }}</div>
+        {% endif %}
     </div>
+
+    {% if type is defined and type is not null %}
+
+        {% if type == 'mem' %}
+            {% form_theme formMem "FormStyles/MainForm.html.twig" %}
+            <div class="container text-white">
+                {{ form_start(formMem) }}
+                {{ form_widget(formMem) }}
+                {{ form_end(formMem) }}
+            </div>
+        {% endif %}
+
+        {% if type == 'phrase' %}
+            {% form_theme formPhrase "FormStyles/MainForm.html.twig" %}
+            <div class="container text-white">
+                {{ form_start(formPhrase) }}
+                {{ form_widget(formPhrase) }}
+                {{ form_end(formPhrase) }}
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+
 
 {% endblock %}
 {% block pages %}{% endblock %}

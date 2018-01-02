@@ -39,7 +39,8 @@
                                 {% endif %}
                             {% else %}
 
-                                    <a class="nav-item nav-link btn btn-info h1 mr-1 text-white" href="{{ path('addNew') }}">Add new</a>
+                                    <a class="nav-item nav-link btn btn-primary h1 mr-1 text-white" href="{{ path('addNew') }}">Add new mem</a>
+                                    <a class="nav-item nav-link btn btn-info h1 mr-1 text-white" href="{{ path('add-phrase') }}">Add new pharse</a>
                                     <a class="nav-item nav-link btn btn-warning h1 mr-1 text-white" href="">Sing up</a>
                                     <a class="nav-item nav-link btn btn-danger h2 mr-1 text-white" href="">Sing in</a>
 
@@ -55,9 +56,8 @@
         {% block messages %}
 
             <div class="container">
-
                     {% if SuccessMessages is defined and SuccessMessages is not null %}
-                        <div class="alert alert-success p-5">{{ SuccessMessages[0] }}</div>
+                        <div class="alert alert-success mt-5 mb-5">{{ SuccessMessages[0] }}</div>
                     {% endif %}
             </div>
 
@@ -74,15 +74,23 @@
 
         <div class="container">
             {% for mem in memes %}
+                {% dump mem %}
+                {% if mem.type == 'mem' %}
                 <div class="container mb-5">
-                    <div class="card soloCard col-md-8">
-                        <p class="h3 text-uppercase text-center mb-0">{{ mem.title }}</p>
+                    <div class="card soloCard col-md-8 black">
+                        <p class="h3 text-uppercase text-center mb-0 text-white">{{ mem.title }}</p>
                         <div class="card-body">
-                            <img class="card-img-top" src="{{ asset('bundles/uploads/memes/'~mem.image) }}">
+                            <img class="card-img-top rounded" src="{{ asset('bundles/memes/uploads/'~mem.image) }}">
                         </div>
 
                     </div>
                 </div>
+                {% endif %}
+                {% if mem.type == 'phrase' %}
+
+                    {{ mem.phraseText|raw }}
+
+                {% endif %}
             {% endfor %}
             {% block elements %}
 

@@ -30,13 +30,29 @@ class Memes
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
-     * @Assert\NotBlank
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Assert\Length(
+     *     min=3,
+     *     max=50,
+     *     groups={"mem"}
+     * )
+     * @Assert\NotBlank(groups={"mem"})
      */
-    private $title;
+    private $title = null;
 
     /**
-     * @ORM\Column(type="string", length=80)
+     * @ORM\Column(type="string", length=400, nullable=true)
+     * @Assert\NotBlank(groups={"phrase"})
+     * @Assert\Length(
+     *     min=3,
+     *     max=400,
+     *     groups={"phrase"}
+     * )
+     */
+    private $phraseText = null;
+
+    /**
+     * @ORM\Column(type="string", length=80, nullable=true)
      */
     private $image = null;
 
@@ -73,7 +89,7 @@ class Memes
     private $imtTmp;
 
     /**
-     * @ORM\Column(type="string", length=80)
+     * @ORM\Column(type="string", length=120, unique=true)
      */
     private $slug;
 
@@ -95,6 +111,17 @@ class Memes
     private $rateNegative = null;
 
     /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $type;
+
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $date;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Comments",
      *     mappedBy="authors"
@@ -107,6 +134,7 @@ class Memes
      */
     public function __construct()
     {
+        $this->date = new \DateTime();
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -297,7 +325,7 @@ class Memes
     }
 
     public function getUploadRootDir(){
-        return __DIR__.'/../../../web/bundles/uploads/memes';
+        return __DIR__.'/../../../web/bundles/memes/uploads';
     }
 
     /**
@@ -346,5 +374,77 @@ class Memes
     public function getAuthor()
     {
         return $this->author;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Memes
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set phraseText
+     *
+     * @param string $phraseText
+     *
+     * @return Memes
+     */
+    public function setPhraseText($phraseText)
+    {
+        $this->phraseText = $phraseText;
+
+        return $this;
+    }
+
+    /**
+     * Get phraseText
+     *
+     * @return string
+     */
+    public function getPhraseText()
+    {
+        return $this->phraseText;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Memes
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 }

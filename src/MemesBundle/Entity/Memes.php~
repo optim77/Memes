@@ -20,6 +20,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Memes
 {
 
+    const UPLOAD_DIR = "uploads/memes/";
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -34,10 +36,14 @@ class Memes
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=80)
-     * @Assert\NotBlank
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $image;
+    private $phraseText = null;
+
+    /**
+     * @ORM\Column(type="string", length=80)
+     */
+    private $image = null;
 
     /**
      * @var UploadedFile
@@ -72,7 +78,7 @@ class Memes
     private $imtTmp;
 
     /**
-     * @ORM\Column(type="string", length=80)
+     * @ORM\Column(type="string", length=80, unique=true)
      */
     private $slug;
 
@@ -94,6 +100,18 @@ class Memes
     private $rateNegative = null;
 
     /**
+     * @ORM\Column(type="string", length=20)
+     * @Assert\NotBlank
+     */
+    private $type;
+
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $date;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Comments",
      *     mappedBy="authors"
@@ -106,6 +124,7 @@ class Memes
      */
     public function __construct()
     {
+        $this->date = new \DateTime();
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -269,10 +288,10 @@ class Memes
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    private function preSave(){
+    public function preSave(){
         if(null != $this->getImageFile()){
-            if(null != $this->image){
-                $this->imtTmp = $this->image;
+            if(null !== $this->image){
+                $this->imageTemp = $this->image;
             }
             $imageName = sha1(uniqid(null,true));
             $this->image = $imageName.'.'.$this->getImageFile()->guessExtension();
@@ -280,23 +299,23 @@ class Memes
     }
 
     /**
-     * ORM\PostPersist
+     * @ORM\PostPersist
      * @ORM\PostUpdate
      */
-
-    private function postSave(){
-        if (null != $this->getImageFile()){
-            $this->getImageFile()->move($this->getUploadRootDir(),$this->image);
+    public function postSave(){
+        if(null !== $this->getImageFile()) {
+            $this->getImageFile()->move($this->getUploadRootDir(), $this->image);
             unset($this->imageFile);
         }
-        if (null !== $this->imtTmp){
-            unlink($this->getUploadRootDir().$this->imtTmp);
-            unset($this->imtTmp);
-        }
+
+            if(null !== $this->imtTmp){
+                unlink($this->getUploadRootDir().$this->imtTmp);
+                unset($this->imtTmp);
+            }
     }
 
-    protected function getUploadRootDir(){
-        return __DIR__.'/../../../web/'.Memes::UPLOAD_DIR;
+    public function getUploadRootDir(){
+        return __DIR__.'/../../../web/bundles/memes/uploads';
     }
 
     /**
@@ -345,5 +364,53 @@ class Memes
     public function getAuthor()
     {
         return $this->author;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Memes
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set phraseText
+     *
+     * @param string $phraseText
+     *
+     * @return Memes
+     */
+    public function setPhraseText($phraseText)
+    {
+        $this->phraseText = $phraseText;
+
+        return $this;
+    }
+
+    /**
+     * Get phraseText
+     *
+     * @return string
+     */
+    public function getPhraseText()
+    {
+        return $this->phraseText;
     }
 }
