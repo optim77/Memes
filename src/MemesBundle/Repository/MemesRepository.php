@@ -26,7 +26,8 @@ class MemesRepository extends EntityRepository
             ->select('m,c')
             ->leftJoin('m.comments','c')
             ->where('m.slug = :slug')
-            ->setParameter('slug', $slug);
+            ->setParameter('slug', $slug)
+            ->orderBy('c.id','DESC');
 
         return $qb->getQuery()->getResult();
     }

@@ -19,7 +19,7 @@ class Comments
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
-     * ORM\generatedValue(strategy="AUTO")
+     * @ORM\GeneratedValue
      */
     private $id;
 
@@ -37,14 +37,11 @@ class Comments
     private $mem;
 
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="Users",
-     *      inversedBy="comments"
-     * )
-     * @ORM\JoinColumn(
-     *     name="author",
-     *     referencedColumnName ="id",
-     *     onDelete="SET NULL"
+     * @ORM\Column(type="string", length=10)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *     min=1,
+     *     max=10
      * )
      */
     private $author;
@@ -157,27 +154,5 @@ class Comments
         return $this->mem;
     }
 
-    /**
-     * Set author
-     *
-     * @param \MemesBundle\Entity\Users $author
-     *
-     * @return Comments
-     */
-    public function setAuthor(\MemesBundle\Entity\Users $author = null)
-    {
-        $this->author = $author;
 
-        return $this;
-    }
-
-    /**
-     * Get author
-     *
-     * @return \MemesBundle\Entity\Users
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
 }

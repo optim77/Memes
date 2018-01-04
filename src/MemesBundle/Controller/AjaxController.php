@@ -21,15 +21,15 @@ class AjaxController extends Controller
      * @Route("/add-comment", name="add-comment")
      */
     public function addCommentAction(){
-        $comment = $_POST['comment'];
-        $slug = $_POST['slug'];
-        $author = $_POST['author'];
+        $comment = $_POST['val'][0];
+        $author = $_POST['val'][1];
+        $slug = $_POST['val'][2];
         $Single = $this->getDoctrine()->getRepository('MemesBundle:Memes')->findBySlug($slug);
         $Comment = new Comments();
         $em = $this->getDoctrine()->getManager();
         $Comment->setContent($comment);
         $Comment->setDate(new \DateTime());
-        $Comment->setMem($Single[0]->getId());
+        $Comment->setMem($Single[0]);
         $Comment->setAuthor($author);
         $em->persist($Comment);
         $em->flush();

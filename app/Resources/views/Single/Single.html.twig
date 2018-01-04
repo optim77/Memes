@@ -85,32 +85,42 @@
         $('#submit').on('click',function () {
             var comment = $('#comment').val();
             var author = $('#author').val();
-            var slug = $('#slug');
+            var slug = $('#slug').val();
             if(comment < 2){
                 $("#alerts").before("<div class='alert alert-danger'>Add some text dude</div>");
             }
             else if(author < 2){
                 $("#alerts").before("<div class='alert alert-danger'>Add your nickname dude</div>");
             }else{
-                alert(comment);
-                var string = "?comment= " + comment + '&author=' + author + "&slug=" + slug;
 
+                var string = "comment=" + comment + '&author=' + author + "&slug=" + slug;
 
-
-                $.ajax({
-                    path: '{{ path('add-comment') }}',
-                    type: 'POST',
-                    datatype: 'json',
-                    data: string,
-                    success: function () {
-                        $("#comments").append('<div id="comments" class="container text-white">\n' +
+                $.post('{{ path('add-comment') }}',{val: [comment,author,slug]}, function (response) {
+                    alert(response.val());
+                    if (response ){
+                        $("#comments").before('<div id="comments" class="container text-white">\n' +
                             '                        <div class="media-body">\n' +
                             '                            <h5>'+author+'</h5>\n' +
                             '                            <p>'+comment+'</p>\n' +
                             '                        </div>\n' +
-                            '                    </div>')
+                            '                    </div>');
                     }
-                })
+                },"json");
+
+                {#$.ajax({#}
+                    {#path: '{{ path('add-comment') }}',#}
+                    {#type: 'POST',#}
+                    {#datatype: 'json',#}
+                    {#data: string,#}
+                    {#success: function () {#}
+                        {#$("#comments").append('<div id="comments" class="container text-white">\n' +#}
+                            {#'                        <div class="media-body">\n' +#}
+                            {#'                            <h5>'+author+'</h5>\n' +#}
+                            {#'                            <p>'+comment+'</p>\n' +#}
+                            {#'                        </div>\n' +#}
+                            {#'                    </div>');#}
+                    {#}#}
+                {#})#}
             }
         })
 

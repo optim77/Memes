@@ -154,14 +154,16 @@ class Comments
         return $this->mem;
     }
 
+
+
     /**
      * Set author
      *
-     * @param \MemesBundle\Entity\Users $author
+     * @param string $author
      *
      * @return Comments
      */
-    public function setAuthor(\MemesBundle\Entity\Users $author = null)
+    public function setAuthor($author)
     {
         $this->author = $author;
 
@@ -171,7 +173,7 @@ class Comments
     /**
      * Get author
      *
-     * @return \MemesBundle\Entity\Users
+     * @return string
      */
     public function getAuthor()
     {
