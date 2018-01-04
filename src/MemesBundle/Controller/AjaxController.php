@@ -8,9 +8,11 @@
 
 namespace MemesBundle\Controller;
 
+use MemesBundle\Entity\Comments;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AjaxController extends Controller
 {
@@ -20,6 +22,20 @@ class AjaxController extends Controller
      */
     public function addCommentAction(){
         $comment = $_POST['comment'];
+        $slug = $_POST['slug'];
+        $author = $_POST['author'];
+        $Single = $this->getDoctrine()->getRepository('MemesBundle:Memes')->findBySlug($slug);
+        $Comment = new Comments();
+        $em = $this->getDoctrine()->getManager();
+        $Comment->setContent($comment);
+        $Comment->setDate(new \DateTime());
+        $Comment->setMem($Single[0]->getId());
+        $Comment->setAuthor($author);
+        $em->persist($Comment);
+        $em->flush();
+        $response = array('code' => 100, "success" => true);
+
+        return new JsonResponse($response);
     }
 
 }

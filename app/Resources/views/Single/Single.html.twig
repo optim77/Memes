@@ -10,12 +10,15 @@
 
                 <p class="text-white">{{ view.author }}</p>
                 {{ view.phraseText|raw }}
-
+                <div class="container" id="alerts"></div>
                 <div class="container">
                     <p class="text-white">Join to discussion</p>
-                    <form action="{{ path('add-comment') }}" method="post" class="form-group">
-                        <textarea name="comment" cols="50" rows="3" class="form-control"></textarea>
-                        <input type="button" class="btn btn-primary mt-2" value="Comment" >
+                    <form id="form" action="{{ path('add-comment') }}" method="post" class="form-group">
+                        <input type="hidden" id="slug" name="slug" value="{{ view.slug }}" >
+                        <textarea name="comment" id="comment" cols="50" rows="3" class="form-control"></textarea>
+                        <label for="author" class="text-white mt-1">Nickname:</label>
+                        <input id="author" type="text" name="author" class="form-control w-25">
+                        <input type="button" id="submit" name="submit" class="btn btn-primary mt-2" value="Comment" >
                     </form>
                 </div>
                 <hr>
@@ -49,15 +52,19 @@
 
                 <div class="container">
                     <p class="text-white">Join to discussion</p>
-                    <form action="{{ path('add-comment') }}" method="post" class="form-group">
-                        <textarea name="comment" cols="50" rows="3" class="form-control"></textarea>
-                        <input type="button" class="btn btn-primary mt-2" value="Comment" >
+                    <div class="container" id="alerts"></div>
+                    <form id="form" action="{{ path('add-comment') }}" method="post" class="form-group">
+                        <input type="hidden" name="slug" id="slug" value="{{ view.slug }}" >
+                        <textarea name="comment" id="comment" cols="50" rows="3" class="form-control"></textarea>
+                        <label for="author" class="text-white mt-1">Nickname:</label>
+                        <input id="author"  type="text" name="author" class="form-control w-25">
+                        <input type="button" id="submit" class="btn btn-primary mt-2 " value="Comment" >
                     </form>
                 </div>
                 <hr>
 
                 {% for comment in view.comments %}
-                    <div class="container text-white">
+                    <div id="comments" class="container text-white">
                         <div class="media-body">
                             <h5>{{ comment.author }}</h5>
                             <p>{{ comment.content }}</p>
@@ -70,6 +77,44 @@
         {% endif %}
 
     {% endif %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script>
+
+        $('#submit').on('click',function () {
+            var comment = $('#comment').val();
+            var author = $('#author').val();
+            var slug = $('#slug');
+            if(comment < 2){
+                $("#alerts").before("<div class='alert alert-danger'>Add some text dude</div>");
+            }
+            else if(author < 2){
+                $("#alerts").before("<div class='alert alert-danger'>Add your nickname dude</div>");
+            }else{
+                alert(comment);
+                var string = "?comment= " + comment + '&author=' + author + "&slug=" + slug;
+
+
+
+                $.ajax({
+                    path: '{{ path('add-comment') }}',
+                    type: 'POST',
+                    datatype: 'json',
+                    data: string,
+                    success: function () {
+                        $("#comments").append('<div id="comments" class="container text-white">\n' +
+                            '                        <div class="media-body">\n' +
+                            '                            <h5>'+author+'</h5>\n' +
+                            '                            <p>'+comment+'</p>\n' +
+                            '                        </div>\n' +
+                            '                    </div>')
+                    }
+                })
+            }
+        })
+
+    </script>
 
 
 {% endblock %}
