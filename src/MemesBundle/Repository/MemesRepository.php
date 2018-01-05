@@ -8,6 +8,7 @@
 
 namespace MemesBundle\Repository;
 use Doctrine\ORM\EntityRepository;
+use MemesBundle\Controller\AddController;
 use MemesBundle\Entity\Memes;
 
 class MemesRepository extends EntityRepository
@@ -32,4 +33,11 @@ class MemesRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function getMemes(){
+        $qb = $this->createQueryBuilder('m')
+            ->select('m')
+            ->where('m.type = :type')
+            ->setParameter('type', AddController::MEM_TYPE);
+        return $qb->getQuery()->getResult();
+    }
 }

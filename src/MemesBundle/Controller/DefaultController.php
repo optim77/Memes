@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
+
+    const ITEM_PER_PAGE = 5;
+
     /**
      * @Route("/{page}", name="index")
      * @Template("Base/Base.html.twig")
@@ -19,10 +22,9 @@ class DefaultController extends Controller
         $paginator = $this->get('knp_paginator');
         $Memes = $this->getDoctrine()->getRepository('MemesBundle:Memes');
         $qb = $Memes->getQueryBuilder();
-        $pagination = $paginator->paginate($qb,$page,5);
+        $pagination = $paginator->paginate($qb,$page,DefaultController::ITEM_PER_PAGE);
         return array(
             'SuccessMessages' => $SuccessMessages ? $SuccessMessages : null,
-            array(),
             'memes' => $pagination
         );
     }
@@ -40,5 +42,19 @@ class DefaultController extends Controller
             'view' => $qb[0]
         );
 
+    }
+
+    /**
+     * @Route("/memes/{page}", name="memes")
+     *
+     */
+    public function getMemesAction($page){
+        $Memes = $this->getDoctrine()->getRepository('MemesBundle:Memes');
+        $qb = $Memes->getMemes();
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($qb,$page,DefaultController::ITEM_PER_PAGE);
+        return array(
+            'memes' => $pagination
+        );
     }
 }

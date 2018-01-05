@@ -10,7 +10,7 @@
 
                 <p class="text-white">{{ view.author }}</p>
                 {{ view.phraseText|raw }}
-                <div class="container" id="alerts"></div>
+                <div id="alerts"></div>
                 <div class="container">
                     <p class="text-white">Join to discussion</p>
                     <form id="form" action="{{ path('add-comment') }}" method="post" class="form-group">
@@ -23,14 +23,17 @@
                 </div>
                 <hr>
 
-                {% for comment in view.comments %}
-                    <div class="container text-white">
-                        <div class="media-body">
-                            <h5>{{ comment.author }}</h5>
-                            <p>{{ comment.content }}</p>
+                <div id="content-comments">
+                    <div id="append"></div>
+                    {% for comment in view.comments %}
+                        <div id="comments" class="container text-white">
+                            <div class="media-body">
+                                <h5>{{ comment.author }}</h5>
+                                <p>{{ comment.content }}</p>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
 
             </div>
 
@@ -52,7 +55,7 @@
 
                 <div class="container">
                     <p class="text-white">Join to discussion</p>
-                    <div class="container" id="alerts"></div>
+                    <div id="alerts"></div>
                     <form id="form" action="{{ path('add-comment') }}" method="post" class="form-group">
                         <input type="hidden" name="slug" id="slug" value="{{ view.slug }}" >
                         <textarea name="comment" id="comment" cols="50" rows="3" class="form-control"></textarea>
@@ -62,15 +65,18 @@
                     </form>
                 </div>
                 <hr>
-
-                {% for comment in view.comments %}
-                    <div id="comments" class="container text-white">
-                        <div class="media-body">
-                            <h5>{{ comment.author }}</h5>
-                            <p>{{ comment.content }}</p>
+                <div id="content-comments">
+                    <div id="append"></div>
+                    {% for comment in view.comments %}
+                        <div id="comments" class="container text-white">
+                            <div class="media-body">
+                                <h5>{{ comment.author }}</h5>
+                                <p>{{ comment.content }}</p>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
+
 
             </div>
 
@@ -87,40 +93,26 @@
             var author = $('#author').val();
             var slug = $('#slug').val();
             if(comment < 2){
-                $("#alerts").before("<div class='alert alert-danger'>Add some text dude</div>");
+                $("#alerts").empty();
+                $("#alerts").append("<div class='alert alert-danger'>Add some text dude</div>");
             }
             else if(author < 2){
-                $("#alerts").before("<div class='alert alert-danger'>Add your nickname dude</div>");
+                $("#alerts").empty();
+                $("#alerts").append("<div class='alert alert-danger'>Add your nickname dude</div>");
             }else{
 
                 var string = "comment=" + comment + '&author=' + author + "&slug=" + slug;
 
                 $.post('{{ path('add-comment') }}',{val: [comment,author,slug]}, function (response) {
-                    alert(response.val());
-                    if (response ){
-                        $("#comments").before('<div id="comments" class="container text-white">\n' +
+                    if (response){
+                        $("#append").append('<div id="comments" class="container text-white">\n' +
                             '                        <div class="media-body">\n' +
                             '                            <h5>'+author+'</h5>\n' +
                             '                            <p>'+comment+'</p>\n' +
                             '                        </div>\n' +
-                            '                    </div>');
+                            '                    </div>').show('slow');
                     }
                 },"json");
-
-                {#$.ajax({#}
-                    {#path: '{{ path('add-comment') }}',#}
-                    {#type: 'POST',#}
-                    {#datatype: 'json',#}
-                    {#data: string,#}
-                    {#success: function () {#}
-                        {#$("#comments").append('<div id="comments" class="container text-white">\n' +#}
-                            {#'                        <div class="media-body">\n' +#}
-                            {#'                            <h5>'+author+'</h5>\n' +#}
-                            {#'                            <p>'+comment+'</p>\n' +#}
-                            {#'                        </div>\n' +#}
-                            {#'                    </div>');#}
-                    {#}#}
-                {#})#}
             }
         })
 
