@@ -39,7 +39,7 @@ class AddController extends Controller
             $em = $this->getDoctrine()->getManager();
             $slug = $_POST['title'].uniqid(null,true);
             $slug = self::slugify($slug);
-            $Mem->setType(AddController::MEM_TYPE);
+            //$Mem->setType(AddController::MEM_TYPE);
             $Mem->setSlug($slug);
             $em->persist($Mem);
             $em->flush();

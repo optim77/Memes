@@ -30,6 +30,7 @@
                             <a class="navbar-brand text-white text-uppercase h1" href="{{ path('index') }}">Memes</a>
                             <a class="nav-item nav-link mx-2 text-white px-3 hv" href="{{ path('top') }}">Top</a>
                             <a class="nav-item nav-link mx-2 text-white px-3 hv" href="{{ path('memes') }}">Memes</a>
+                                <a class="nav-item nav-link mx-2 text-white px-3 hv" href="{{ path('memes') }}">Videos</a>
                             <a class="nav-item nav-link mx-2 text-white px-3 hv" href="{{ path('phrases') }}">Phrases</a>
                             {% if app.user %}
                                 <a class="nav-item nav-link btn btn-info h1 mx-3" href="">Profile</a>
@@ -42,9 +43,6 @@
 
                                     <a class="nav-item nav-link btn btn-danger h1 mr-1 text-white" href="{{ path('addNew') }}">Add new mem</a>
                                     <a class="nav-item nav-link btn btn-danger h1 mr-1 text-white" href="{{ path('add-phrase') }}">Add new pharse</a>
-                                    {#<a class="nav-item nav-link btn btn-warning h1 mr-1 text-white" href="">Sing up</a>#}
-                                    {#<a class="nav-item nav-link btn btn-danger h2 mr-1 text-white" href="">Sing in</a>#}
-
                             {% endif %}
 
                         </div>
@@ -75,6 +73,35 @@
 
         <div class="container ">
             {% for mem in memes %}
+
+                {% if mem.type == "video" %}
+
+                    <div class="container mb-5">
+                        <a href="{{ path('single', {'slug': mem.slug}) }}">
+                            <div class="card soloCard col-md-8 black">
+                                <p class="h3 text-uppercase text-center mb-0 text-white">{{ mem.title }}</p>
+                                <div class="embed-responsive embed-responsive-21by9">
+                                    <video class="embed-responsive embed-responsive-21by9" controls>
+                                        <source src="{{ asset('bundles/memes/uploads/'~mem.image) }}">
+                                    </video>
+
+                                </div>
+                            </div>
+                        </a>
+                        <div class="container">
+                            <div class="btn-group rounded">
+                                <button id="positive" onclick="ratePositive('{{ path('rate-positive') }}','{{ mem.slug }}',this)" value="{{ mem.slug }}" class="btn btn-danger"><i class="fas fa-thumbs-up m-1"></i></button>
+                                <button id="counter" class="mr-1">{{ mem.ratePositive is null ? 0 : mem.ratePositive }}</button>
+                            </div>
+                            <div class="btn-group">
+                                <button id="negative" onclick="rateNegative('{{ path('rate-negative') }}','{{ mem.slug }}',this)" value="{{ mem.slug }}" class="btn btn-info"><i class="fas fa-thumbs-down m-1"></i></button>
+                                <button id="counter">{{ mem.rateNegative is null ? 0 : mem.rateNegative }}</button>
+                            </div>
+                            <p class="text-white">{{ mem.date|date("d/m/Y") }}</p>
+                        </div>
+                    </div>
+
+                {% endif %}
                 {% if mem.type == 'mem' %}
                 <div class="container mb-5">
                     <a href="{{ path('single', {'slug': mem.slug}) }}">
@@ -150,6 +177,9 @@
 
 
         <script>
+
+            $("video").prop("volume", 0.1);
+
             function ratePositive(path,slug,a) {
                 $.post(path,{val:slug},function () {
                     var val = $(a).next('#counter').text();

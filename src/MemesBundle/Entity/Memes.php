@@ -59,15 +59,23 @@ class Memes
     /**
      * @var UploadedFile
      *
-     * @Assert\Image(
-     *     minWidth=50,
-     *     maxWidth=1500,
-     *     minHeight=50,
-     *     maxHeight=1500,
-     *     maxSize="15M"
+     * @Assert\File(
+     *     mimeTypes={"image/jpeg","image/gif","image/png","video/mp4","video/quicktime","video/avi"},
+     *     maxSize="20M"
      * )
      */
     private $imageFile;
+
+//    /**
+//     * @var UploadedFile
+//     *
+//     * @Assert\File(
+//     *     maxSize="20M",
+//     *     mimeTypes={""},
+//     *     mimeTypesMessage = "Please upload a valid in mp4 or avi"
+//     * )
+//     */
+//    private $videoFile;
 
     /**
      * @return UploadedFile
@@ -305,6 +313,14 @@ class Memes
             }
             $imageName = sha1(uniqid(null,true));
             $this->image = $imageName.'.'.$this->getImageFile()->guessExtension();
+            $extension = $this->getImageFile()->guessExtension();
+            if($extension == 'mp4' || $extension == 'quicktime' || $extension == 'avi'){
+                $this->setType('video');
+            }
+            if($extension == 'jpeg' || $extension == 'gif' || $extension == 'png'){
+                $this->setType('mem');
+            }
+
         }
     }
 
