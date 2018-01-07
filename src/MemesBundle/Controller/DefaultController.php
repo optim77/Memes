@@ -10,10 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller
 {
 
-    const ITEM_PER_PAGE = 5;
+    const ITEM_PER_PAGE = 10;
 
     /**
-     * @Route("/{page}", name="index")
+     * @Route("/main/{page}", name="index")
      * @Template("Base/Base.html.twig")
      */
     public function indexAction(Request $request, $page = 1)
@@ -37,7 +37,6 @@ class DefaultController extends Controller
 
         $Memes = $this->getDoctrine()->getRepository('MemesBundle:Memes');
         $qb = $Memes->getSingle($slug);
-        dump($qb);
         return array(
             'view' => $qb[0]
         );
@@ -46,11 +45,39 @@ class DefaultController extends Controller
 
     /**
      * @Route("/memes/{page}", name="memes")
-     *
+     * @Template("Memes/Memes.html.twig")
      */
-    public function getMemesAction($page){
+    public function getMemesAction(Request $request,$page = 1){
         $Memes = $this->getDoctrine()->getRepository('MemesBundle:Memes');
         $qb = $Memes->getMemes();
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($qb,$page,DefaultController::ITEM_PER_PAGE);
+        return array(
+            'memes' => $pagination
+        );
+    }
+
+    /**
+     * @Route("/phrases/{page}", name="phrases")
+     * @Template("Phrases/Phrase.html.twig")
+     */
+    public function getPhrasesAction($page = 1){
+        $Phrases = $this->getDoctrine()->getRepository('MemesBundle:Memes');
+        $qb = $Phrases->getPhrases();
+        $paginator = $this->get('knp_paginator');
+        $pagination  = $paginator->paginate($qb,$page,DefaultController::ITEM_PER_PAGE);
+        return array(
+            'memes' => $pagination
+        );
+    }
+
+    /**
+     * @Route("/top/{page}", name="top")
+     * @Template("Top/Top.html.twig")
+     */
+    public function getTopAction($page = 1){
+        $Memes = $this->getDoctrine()->getRepository('MemesBundle:Memes');
+        $qb = $Memes->getTop();
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate($qb,$page,DefaultController::ITEM_PER_PAGE);
         return array(

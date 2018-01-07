@@ -1,5 +1,5 @@
 {% extends "Base/Base.html.twig" %}
-
+{% block title %}Memes  {{ view.title is not null ? '-'~view.title : '' }}{% endblock %}
 {% block content %}
 
     {% if view is defined and view is not null %}
@@ -10,6 +10,19 @@
 
                 <p class="text-white">{{ view.author }}</p>
                 {{ view.phraseText|raw }}
+
+                <div class="container">
+                    <div class="btn-group rounded">
+                        <button id="positive" onclick="" value="{{ view.slug }}" class="btn btn-danger"><i class="fas fa-thumbs-up m-1"></i></button>
+                        <button class="mr-1">{{ view.ratePositive is null ? 0 : view.ratePositive }}</button>
+                    </div>
+                    <div class="btn-group">
+                        <button id="negative" value="{{ view.slug }}" class="btn btn-info"><i class="fas fa-thumbs-down m-1"></i></button>
+                        <button>{{ view.rateNegative is null ? 0 : view.rateNegative }}</button>
+                    </div>
+                    <p class="text-white">{{ view.date|date("d/m/Y") }}</p>
+                </div>
+
                 <div id="alerts"></div>
                 <div class="container">
                     <p class="text-white">Join to discussion</p>
@@ -51,6 +64,17 @@
                             <img class="card-img-top rounded" src="{{ asset('bundles/memes/uploads/'~view.image) }}">
                         </div>
                     </div>
+                    <div class="container">
+                        <div class="btn-group rounded">
+                            <button id="positive" onclick="ratePositive('{{ path('rate-positive') }}','{{ view.slug }}',this)" value="{{ view.slug }}" class="btn btn-danger"><i class="fas fa-thumbs-up m-1"></i></button>
+                            <button id="counter" class="mr-1">{{ view.ratePositive is null ? 0 : view.ratePositive }}</button>
+                        </div>
+                        <div class="btn-group">
+                            <button id="negative" onclick="rateNegative('{{ path('rate-negative') }}','{{ view.slug }}',this)" value="{{ view.slug }}" class="btn btn-info"><i class="fas fa-thumbs-down m-1"></i></button>
+                            <button id="counter">{{ view.rateNegative is null ? 0 : view.rateNegative }}</button>
+                        </div>
+                        <p class="text-white">{{ view.date|date("d/m/Y") }}</p>
+                    </div>
                 </div>
 
                 <div class="container">
@@ -64,6 +88,7 @@
                         <input type="button" id="submit" class="btn btn-primary mt-2 " value="Comment" >
                     </form>
                 </div>
+
                 <hr>
                 <div id="content-comments">
                     <div id="append"></div>
@@ -111,6 +136,8 @@
                             '                            <p>'+comment+'</p>\n' +
                             '                        </div>\n' +
                             '                    </div>').show('slow');
+                        $(comment).empty();
+                        $(author).empty();
                     }
                 },"json");
             }

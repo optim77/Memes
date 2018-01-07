@@ -1,0 +1,28 @@
+{% extends "Base/Base.html.twig" %}
+{% block content %}
+
+    {% for mem in memes %}
+        <div class="container">
+            <div class="container">
+                <a class="text-dark" href="{{ path('single', {'slug': mem.slug}) }}">
+                    {{ mem.phraseText|raw }}
+                </a>
+                <div class="container">
+                    <div class="btn-group rounded">
+                        <button class="btn btn-danger"><i class="fas fa-thumbs-up m-1"></i></button>
+                        <button class="mr-1">{{ mem.ratePositive is null ? 0 : mem.ratePositive }}</button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-info"><i class="fas fa-thumbs-down m-1"></i></button>
+                        <button>{{ mem.rateNegative is null ? 0 : mem.rateNegative }}</button>
+                    </div>
+                    <p class="text-white">{{ mem.date|date("d/m/Y") }}</p>
+                </div>
+            </div>
+
+        </div>
+    {% endfor %}
+
+
+
+{% endblock %}

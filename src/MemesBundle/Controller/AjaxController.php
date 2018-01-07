@@ -38,4 +38,36 @@ class AjaxController extends Controller
         return new JsonResponse($response);
     }
 
+    /**
+     * @Route("/rate-positive", name="rate-positive")
+     */
+    public function ratePositiveAction(){
+        $slug = $_POST['val'];
+        $Single = $this->getDoctrine()->getRepository('MemesBundle:Memes')->findBySlug($slug);
+        $Current = $Single[0]->getRatePositive();
+        $Current++;
+        $Single[0]->setRatePositive($Current);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($Single[0]);
+        $em->flush();
+        $response = array('code' => 100, 'success' => true);
+        return new JsonResponse($response);
+    }
+
+    /**
+     * @Route("/rate-negative", name="rate-negative")
+     */
+    public function rateNegativeAction(){
+        $slug = $_POST['val'];
+        $Single = $this->getDoctrine()->getRepository('MemesBundle:Memes')->findBySlug($slug);
+        $Current = $Single[0]->getRateNegative();
+        $Current++;
+        $Single[0]->setRateNegative($Current);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($Single[0]);
+        $em->flush();
+        $response = array('code' => 100, 'success' => true);
+        return new JsonResponse($response);
+    }
+
 }

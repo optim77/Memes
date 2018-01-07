@@ -37,7 +37,25 @@ class MemesRepository extends EntityRepository
         $qb = $this->createQueryBuilder('m')
             ->select('m')
             ->where('m.type = :type')
-            ->setParameter('type', AddController::MEM_TYPE);
+            ->setParameter('type', AddController::MEM_TYPE)
+            ->orderBy('m.id','DESC');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getPhrases(){
+        $qb = $this->createQueryBuilder('m')
+            ->select('m')
+            ->where('m.type = :type')
+            ->setParameter('type', AddController::PHRASE_TYPE)
+            ->orderBy('m.id','DESC');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getTop(){
+        $qb = $this->createQueryBuilder('m')
+            ->select('m')
+            ->orderBy('m.ratePositive', 'DESC');
+
         return $qb->getQuery()->getResult();
     }
 }
