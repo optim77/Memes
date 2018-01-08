@@ -60,7 +60,7 @@ class Memes
      * @var UploadedFile
      *
      * @Assert\File(
-     *     mimeTypes={"image/jpeg","image/gif","image/png","video/mp4","video/quicktime","video/avi"},
+     *     mimeTypes={"image/jpeg","image/gif","image/png","video/mp4","video/webm","video/ogg"},
      *     maxSize="20M"
      * )
      */
@@ -314,7 +314,7 @@ class Memes
             $imageName = sha1(uniqid(null,true));
             $this->image = $imageName.'.'.$this->getImageFile()->guessExtension();
             $extension = $this->getImageFile()->guessExtension();
-            if($extension == 'mp4' || $extension == 'quicktime' || $extension == 'avi'){
+            if($extension == 'mp4' || $extension == 'ogg' || $extension == 'webm'){
                 $this->setType('video');
             }
             if($extension == 'jpeg' || $extension == 'gif' || $extension == 'png'){

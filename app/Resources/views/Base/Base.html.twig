@@ -30,7 +30,7 @@
                             <a class="navbar-brand text-white text-uppercase h1" href="{{ path('index') }}">Memes</a>
                             <a class="nav-item nav-link mx-2 text-white px-3 hv" href="{{ path('top') }}">Top</a>
                             <a class="nav-item nav-link mx-2 text-white px-3 hv" href="{{ path('memes') }}">Memes</a>
-                                <a class="nav-item nav-link mx-2 text-white px-3 hv" href="{{ path('memes') }}">Videos</a>
+                                <a class="nav-item nav-link mx-2 text-white px-3 hv" href="{{ path('videos') }}">Videos</a>
                             <a class="nav-item nav-link mx-2 text-white px-3 hv" href="{{ path('phrases') }}">Phrases</a>
                             {% if app.user %}
                                 <a class="nav-item nav-link btn btn-info h1 mx-3" href="">Profile</a>
@@ -105,7 +105,7 @@
                 {% if mem.type == 'mem' %}
                 <div class="container mb-5">
                     <a href="{{ path('single', {'slug': mem.slug}) }}">
-                    <div class="card soloCard col-md-8 black">
+                    <div class="card soloCard col-md-10 black">
                         <p class="h3 text-uppercase text-center mb-0 text-white">{{ mem.title }}</p>
                         <div class="card-body">
                             <img class="card-img-top rounded" src="{{ asset('bundles/memes/uploads/'~mem.image) }}">

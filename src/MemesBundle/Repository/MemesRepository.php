@@ -14,48 +14,63 @@ use MemesBundle\Entity\Memes;
 class MemesRepository extends EntityRepository
 {
 
-    public function getQueryBuilder(array $params = array()){
+    public function getQueryBuilder(array $params = array())
+    {
         $qb = $this->createQueryBuilder('m')
             ->select('m')
-            ->orderBy('m.id','DESC');
+            ->orderBy('m.id', 'DESC');
 
         return $qb->getQuery()->getResult();
     }
 
-    public function getSingle($slug){
+    public function getSingle($slug)
+    {
         $qb = $this->createQueryBuilder('m')
             ->select('m,c')
-            ->leftJoin('m.comments','c')
+            ->leftJoin('m.comments', 'c')
             ->where('m.slug = :slug')
             ->setParameter('slug', $slug)
-            ->orderBy('c.id','DESC');
+            ->orderBy('c.id', 'DESC');
 
         return $qb->getQuery()->getResult();
     }
 
-    public function getMemes(){
+    public function getMemes()
+    {
         $qb = $this->createQueryBuilder('m')
             ->select('m')
             ->where('m.type = :type')
             ->setParameter('type', AddController::MEM_TYPE)
-            ->orderBy('m.id','DESC');
+            ->orderBy('m.id', 'DESC');
         return $qb->getQuery()->getResult();
     }
 
-    public function getPhrases(){
+    public function getPhrases()
+    {
         $qb = $this->createQueryBuilder('m')
             ->select('m')
             ->where('m.type = :type')
             ->setParameter('type', AddController::PHRASE_TYPE)
-            ->orderBy('m.id','DESC');
+            ->orderBy('m.id', 'DESC');
         return $qb->getQuery()->getResult();
     }
 
-    public function getTop(){
+    public function getTop()
+    {
         $qb = $this->createQueryBuilder('m')
             ->select('m')
             ->orderBy('m.ratePositive', 'DESC');
 
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getVideos()
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select('m')
+            ->where('m.type = :type')
+            ->setParameter('type', AddController::VIDEOS_TYPE)
+            ->orderBy('m.id', 'DESC');
         return $qb->getQuery()->getResult();
     }
 }

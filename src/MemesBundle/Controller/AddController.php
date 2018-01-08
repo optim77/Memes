@@ -22,7 +22,7 @@ class AddController extends Controller
 
     const MEM_TYPE = 'mem';
     const PHRASE_TYPE = 'phrase';
-
+    const VIDEOS_TYPE = 'video';
 
 
     /**
@@ -74,7 +74,7 @@ class AddController extends Controller
             //$backgroundColor =  array_rand(AddController::COLORS,1);
             $Colors = new ConstantValues();
             $backgroundColor = $Colors->getOne();
-            $text = '<div class="card text-center soloCard mb-5 col-md-8 p-5" style="background-color: '.$backgroundColor.'" ><div class="card-block"><h4 class="card-title">'.$ContentText.'</h4></div></div>';
+            $text = '<div class="card text-center soloCard mb-5 col-md-10 p-5" style="background-color: '.$backgroundColor.'" ><div class="card-block"><h4 class="card-title">'.$ContentText.'</h4></div></div>';
             $slug = substr($_POST['phraseText'],0,60).uniqid(null,true);
             $slug = self::slugify($slug);
             $Phrase->setSlug($slug);

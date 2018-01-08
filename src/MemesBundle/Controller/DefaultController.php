@@ -6,11 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class DefaultController extends Controller
 {
 
     const ITEM_PER_PAGE = 10;
+
 
     /**
      * @Route("/main/{page}", name="index")
@@ -78,6 +80,20 @@ class DefaultController extends Controller
     public function getTopAction($page = 1){
         $Memes = $this->getDoctrine()->getRepository('MemesBundle:Memes');
         $qb = $Memes->getTop();
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($qb,$page,DefaultController::ITEM_PER_PAGE);
+        return array(
+            'memes' => $pagination
+        );
+    }
+
+    /**
+     * @Route("/videos/{page}", name="videos")
+     * @Template("Videos/Videos.html.twig")
+     */
+    public function getVideosAction($page = 1){
+        $Memes = $this->getDoctrine()->getRepository('MemesBundle:Memes');
+        $qb = $Memes->getVideos();
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate($qb,$page,DefaultController::ITEM_PER_PAGE);
         return array(

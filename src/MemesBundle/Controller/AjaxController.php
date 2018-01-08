@@ -21,13 +21,24 @@ class AjaxController extends Controller
      * @Route("/add-comment", name="add-comment")
      */
     public function addCommentAction(){
-        $comment = $_POST['val'][0];
-        $author = $_POST['val'][1];
-        $slug = $_POST['val'][2];
+
+        print_r($_POST);
+        print_r($_FILES);
+
+        if (isset($_POST['comment'])){
+            $comment = $_POST['comment'];
+        }
+        if (isset($_POST['author'])){
+            $author = $_POST['author'];
+        }
+        if(isset($_POST['slug'])){
+            $slug = $_POST['slug'];
+        }
         $Single = $this->getDoctrine()->getRepository('MemesBundle:Memes')->findBySlug($slug);
         $Comment = new Comments();
         $em = $this->getDoctrine()->getManager();
         $Comment->setContent($comment);
+        $Comment->setMediaFile($_FILES['file']);
         $Comment->setDate(new \DateTime());
         $Comment->setMem($Single[0]);
         $Comment->setAuthor($author);

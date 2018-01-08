@@ -29,6 +29,20 @@
                     </div>
                     <p class="text-white">{{ view.date|date("d/m/Y") }}</p>
                 </div>
+                <div id="alerts"></div>
+                <div class="container">
+                    <p class="text-white">Join to discussion</p>
+                    <form id="form" action="{{ path('add-comment') }}" method="post" class="form-group">
+                        <input type="hidden" id="slug" name="slug" value="{{ view.slug }}" >
+                        <textarea name="comment" id="comment" cols="50" rows="3" class="form-control"></textarea>
+                        <label for="author" class="text-white mt-1">Nickname:</label>
+                        <input id="author" type="text" name="author" class="form-control w-25">
+                        <label for="file" class="text-white mt-1">File:</label>
+                        <input id="file" class="form-control w-25" type="file">
+                        <input type="button" id="submit" name="submit" class="btn btn-primary mt-3" value="Comment" >
+                    </form>
+                </div>
+                <hr>
             </div>
 
         {% endif %}
@@ -56,12 +70,18 @@
                 <div id="alerts"></div>
                 <div class="container">
                     <p class="text-white">Join to discussion</p>
-                    <form id="form" action="{{ path('add-comment') }}" method="post" class="form-group">
+                    <form id="form" action="{{ path('add-comment') }}" method="post" enctype="multipart/form-data" class="form-group">
                         <input type="hidden" id="slug" name="slug" value="{{ view.slug }}" >
                         <textarea name="comment" id="comment" cols="50" rows="3" class="form-control"></textarea>
                         <label for="author" class="text-white mt-1">Nickname:</label>
                         <input id="author" type="text" name="author" class="form-control w-25">
-                        <input type="button" id="submit" name="submit" class="btn btn-primary mt-2" value="Comment" >
+                       <label for="file" class="text-white mt-1">File:</label>
+                        <input id="file" class="form-control w-25" type="file">
+                        <div id="progress-wrp" class="progress-bar mt-3 w-25 d-none">
+                            <div class="progress-bar"></div>
+                            <div class="status">0%</div>
+                        </div>
+                        <input type="button" id="submit" name="submit" class="btn btn-primary mt-3" value="Comment" >
                     </form>
                 </div>
                 <hr>
@@ -88,7 +108,7 @@
 
                 <div class="container mb-5">
                     <p class="text-white">{{ view.author }}</p>
-                    <div class="card soloCard col-md-8 black">
+                    <div class="card soloCard col-md-10 black">
                         <p class="h3 text-uppercase text-center mb-0 text-white">{{ view.title }}</p>
                         <div class="card-body">
                             <img class="card-img-top rounded" src="{{ asset('bundles/memes/uploads/'~view.image) }}">
@@ -143,34 +163,120 @@
 
     <script>
 
+        var Upload = function (file,comment,author,slug) {
+            this.file = file;
+            this.comment = comment;
+            this.author = author;
+            this.slug = slug;
+        };
+
+        Upload.prototype.getType = function() {
+            return this.file.type;
+        };
+        Upload.prototype.getSize = function() {
+            return this.file.size;
+        };
+        Upload.prototype.getName = function() {
+            return this.file.name;
+        };
+        Upload.prototype.doUpload = function () {
+            var that = this;
+            var formData = new FormData();
+
+            // add assoc key values, this will be posts values
+            formData.append("file", this.file, this.getName());
+            formData.append("upload_file", true);
+            formData.append("comment",this.comment);
+            formData.append('author',this.author);
+            formData.append('slug',this.slug);
+
+            console.log(formData.valueOf());
+            $.ajax({
+                type: "POST",
+                url: "{{ path('add-comment') }}",
+                xhr: function () {
+                    var myXhr = $.ajaxSettings.xhr();
+                    if (myXhr.upload) {
+                        myXhr.upload.addEventListener('progress', that.progressHandling, false);
+                    }
+                    return myXhr;
+                },
+                success: function (data) {
+                    // your callback here
+                },
+                error: function (error) {
+                    $("#alerts").empty();
+                    $("#alerts").append("<div class='alert alert-danger'>We can't add this file</div>");
+                },
+                async: true,
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                timeout: 60000
+            });
+        };
+
+        Upload.prototype.progressHandling = function (event) {
+            var percent = 0;
+            var position = event.loaded || event.position;
+            var total = event.total;
+            var progress_bar_id = "#progress-wrp";
+            if (event.lengthComputable) {
+                percent = Math.ceil(position / total * 100);
+            }
+            // update progressbars classes so it fits your code
+            $(progress_bar_id + " .progress-bar").css("width", +percent + "%");
+            $(progress_bar_id + " .status").text(percent + "%");
+        };
+
+
+
         $('#submit').on('click',function () {
             var comment = $('#comment').val();
             var author = $('#author').val();
             var slug = $('#slug').val();
-            if(comment < 2){
-                $("#alerts").empty();
-                $("#alerts").append("<div class='alert alert-danger'>Add some text dude</div>");
-            }
-            else if(author < 2){
-                $("#alerts").empty();
-                $("#alerts").append("<div class='alert alert-danger'>Add your nickname dude</div>");
+            var file = document.getElementById('file').files[0];
+            console.log(file);
+            if(!file){
+                // if upload file isn't set
+                if(comment < 2){
+                    $("#alerts").empty();
+                    $("#alerts").append("<div class='alert alert-danger'>Add some text dude</div>");
+                }
+                else if(author < 2){
+                    $("#alerts").empty();
+                    $("#alerts").append("<div class='alert alert-danger'>Add your nickname dude</div>");
+                }else{
+
+                    var string = "comment=" + comment + '&author=' + author + "&slug=" + slug;
+
+                    $.post('{{ path('add-comment') }}',{val: [comment,author,slug]}, function (response) {
+                        if (response){
+                            $("#append").append('<div id="comments" class="container text-white">\n' +
+                                '                        <div class="media-body">\n' +
+                                '                            <h5>'+author+'</h5>\n' +
+                                '                            <p>'+comment+'</p>\n' +
+                                '                        </div>\n' +
+                                '                    </div>').show('slow');
+                            $(comment).empty();
+                            $(author).empty();
+                        }
+                    },"json");
+                }
             }else{
 
-                var string = "comment=" + comment + '&author=' + author + "&slug=" + slug;
+                // if upload file is set
+                //Change id to your id
+//                $("#file").on("change", function (e) {
+                    var file = document.getElementById('file').files[0];
+                    var upload = new Upload(file,comment,author,slug);
+                    // maby check size or type here with upload.getSize() and upload.getType()
+                    upload.doUpload();
+//                });
 
-                $.post('{{ path('add-comment') }}',{val: [comment,author,slug]}, function (response) {
-                    if (response){
-                        $("#append").append('<div id="comments" class="container text-white">\n' +
-                            '                        <div class="media-body">\n' +
-                            '                            <h5>'+author+'</h5>\n' +
-                            '                            <p>'+comment+'</p>\n' +
-                            '                        </div>\n' +
-                            '                    </div>').show('slow');
-                        $(comment).empty();
-                        $(author).empty();
-                    }
-                },"json");
             }
+
         })
 
     </script>

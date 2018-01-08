@@ -9,10 +9,12 @@
 namespace MemesBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Table(name="comments")
  * @ORM\Entity(repositoryClass="MemesBundle\Repository\CommentsRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Comments
 {
@@ -37,6 +39,25 @@ class Comments
     private $mem;
 
     /**
+     * @ORM\Column(type="string", length=80, nullable=true)
+     */
+    private $media = null;
+
+    /**
+     * @var UploadedFile
+     *
+     * @Assert\File(
+     *     mimeTypes={"image/jpeg","image/gif","image/png","video/mp4","video/webm","video/ogg"},
+     *     maxSize="20M"
+     * )
+     */
+    private $mediaFile;
+
+    private $mediaTmp;
+
+
+
+    /**
      * @ORM\Column(type="string", length=10)
      * @Assert\NotBlank
      * @Assert\Length(
@@ -56,6 +77,11 @@ class Comments
      * @ORM\Column(type="datetime")
      */
     private $date;
+
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $type;
 
 
     /**
@@ -154,5 +180,111 @@ class Comments
         return $this->mem;
     }
 
+    /**
+     * @return UploadedFile
+     */
+    public function getMediaFile()
+    {
+        return $this->mediaFile;
+    }
+
+    /**
+     * @param UploadedFile $mediaFile
+     */
+    public function setMediaFile($mediaFile)
+    {
+        $this->mediaFile = $mediaFile;
+    }
+
+    /**
+     * Set author
+     *
+     * @param string $author
+     *
+     * @return Comments
+     */
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get author
+     *
+     * @return string
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * Set media
+     *
+     * @param string $media
+     *
+     * @return Comments
+     */
+    public function setMedia($media)
+    {
+        $this->media = $media;
+
+        return $this;
+    }
+
+    /**
+     * Get media
+     *
+     * @return string
+     */
+    public function getMedia()
+    {
+        return $this->media;
+    }
+
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function preSave(){
+        if(null != $this->getMediaFile()){
+            if(null !== $this->media){
+                $this->mediaTmp = $this->media;
+            }
+            $imageName = sha1(uniqid(null,true));
+            $this->image = $imageName.'.'.$this->getMediaFile()->guessExtension();
+            $extension = $this->getMediaFile()->guessExtension();
+            if($extension == 'mp4' || $extension == 'ogg' || $extension == 'webm'){
+                $this->setType('video');
+            }
+            if($extension == 'jpeg' || $extension == 'gif' || $extension == 'png'){
+                $this->setType('mem');
+            }
+
+        }
+    }
+
+    /**
+     * @ORM\PostPersist
+     * @ORM\PostUpdate
+     */
+    public function postSave(){
+        if(null !== $this->getImageFile()) {
+            $this->getImageFile()->move($this->getUploadRootDir(), $this->image);
+            unset($this->imageFile);
+        }
+
+        if(null !== $this->imtTmp){
+            unlink($this->getUploadRootDir().$this->imtTmp);
+            unset($this->imtTmp);
+        }
+    }
+
+    public function getUploadRootDir(){
+        return __DIR__.'/../../../web/bundles/memes/uploads';
+    }
 
 }
