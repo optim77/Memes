@@ -22,31 +22,56 @@ class AjaxController extends Controller
      */
     public function addCommentAction(){
 
-        print_r($_POST);
-        print_r($_FILES);
-
-        if (isset($_POST['comment'])){
-            $comment = $_POST['comment'];
-        }
-        if (isset($_POST['author'])){
-            $author = $_POST['author'];
-        }
-        if(isset($_POST['slug'])){
-            $slug = $_POST['slug'];
-        }
-        $Single = $this->getDoctrine()->getRepository('MemesBundle:Memes')->findBySlug($slug);
         $Comment = new Comments();
         $em = $this->getDoctrine()->getManager();
-        $Comment->setContent($comment);
-        $Comment->setMediaFile($_FILES['file']);
-        $Comment->setDate(new \DateTime());
-        $Comment->setMem($Single[0]);
-        $Comment->setAuthor($author);
-        $em->persist($Comment);
-        $em->flush();
-        $response = array('code' => 100, "success" => true);
 
-        return new JsonResponse($response);
+        if($_FILES == null){
+
+            if(isset($_POST['val'][0])){
+                $comment = $_POST['val'][0];
+            }
+            if(isset($_POST['val'][0])){
+                $author = $_POST['val'][1];
+            }
+            if(isset($_POST['val'][0])){
+                $slug = $_POST['val'][2];
+            }
+            $Single = $this->getDoctrine()->getRepository('MemesBundle:Memes')->findBySlug($slug);
+            $Comment->setContent($comment);
+            $Comment->setDate(new \DateTime());
+            $Comment->setMem($Single[0]);
+            $Comment->setAuthor($author);
+            $em->persist($Comment);
+            $em->flush();
+            $response = array('code' => 100, "success" => true);
+
+            return new JsonResponse($response);
+
+        }else{
+
+            if (isset($_POST['comment'])){
+                $comment = $_POST['comment'];
+            }
+            if (isset($_POST['author'])){
+                $author = $_POST['author'];
+            }
+            if(isset($_POST['slug'])){
+                $slug = $_POST['slug'];
+            }
+            $Single = $this->getDoctrine()->getRepository('MemesBundle:Memes')->findBySlug($slug);
+            $Comment->setContent($comment);
+            $Comment->setMediaFile($_FILES['file']);
+            $Comment->setDate(new \DateTime());
+            $Comment->setMem($Single[0]);
+            $Comment->setAuthor($author);
+            $em->persist($Comment);
+            $em->flush();
+            $Type = $Comment->getType();
+            $Media = $Comment->getMedia();
+            $response = array('code' => 100, "success" => true,'comment' => $comment, 'author' => $author,'type' => $Type , 'media' => $Media);
+
+            return new JsonResponse($response);
+        }
     }
 
     /**

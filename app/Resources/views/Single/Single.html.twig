@@ -14,18 +14,17 @@
                             <video class="embed-responsive embed-responsive-21by9"  controls>
                                 <source src="{{ asset('bundles/memes/uploads/'~view.image) }}">
                             </video>
-
                         </div>
                     </div>
                 </a>
                 <div class="container">
                     <div class="btn-group rounded">
-                        <button id="positive" onclick="" value="{{ view.slug }}" class="btn btn-danger"><i class="fas fa-thumbs-up m-1"></i></button>
-                        <button class="mr-1">{{ view.ratePositive is null ? 0 : view.ratePositive }}</button>
+                        <button id="positive" onclick="ratePositive('{{ path('rate-positive') }}','{{ view.slug }}',this)" value="{{ view.slug }}" class="btn btn-danger"><i class="fas fa-thumbs-up m-1"></i></button>
+                        <button id="counter" class="mr-1">{{ view.ratePositive is null ? 0 : view.ratePositive }}</button>
                     </div>
                     <div class="btn-group">
-                        <button id="negative" value="{{ view.slug }}" class="btn btn-info"><i class="fas fa-thumbs-down m-1"></i></button>
-                        <button>{{ view.rateNegative is null ? 0 : view.rateNegative }}</button>
+                        <button id="negative" onclick="rateNegative('{{ path('rate-negative') }}','{{ view.slug }}',this)" value="{{ view.slug }}" class="btn btn-info"><i class="fas fa-thumbs-down m-1"></i></button>
+                        <button id="counter">{{ view.rateNegative is null ? 0 : view.rateNegative }}</button>
                     </div>
                     <p class="text-white">{{ view.date|date("d/m/Y") }}</p>
                 </div>
@@ -34,6 +33,7 @@
                     <p class="text-white">Join to discussion</p>
                     <form id="form" action="{{ path('add-comment') }}" method="post" class="form-group">
                         <input type="hidden" id="slug" name="slug" value="{{ view.slug }}" >
+                        <label class="text-white" for="comment">Comment</label>
                         <textarea name="comment" id="comment" cols="50" rows="3" class="form-control"></textarea>
                         <label for="author" class="text-white mt-1">Nickname:</label>
                         <input id="author" type="text" name="author" class="form-control w-25">
@@ -43,6 +43,30 @@
                     </form>
                 </div>
                 <hr>
+
+                <div id="content-comments">
+                    <div id="append"></div>
+                    {% for comment in view.comments %}
+                        <div id="comments" class="container text-white mt-3">
+                            <div class="media-body">
+                                <h5>{{ comment.author }}</h5>
+                                <p class="ml-5">{{ comment.content }}</p>
+                                {% if(comment.type == "mem") %}
+                                    <img class="w-50 ml-5 mb-3" src="{{  asset('bundles/memes/uploads/'~comment.media) }}">
+                                {% endif %}
+                                {% if(comment.type == "video") %}
+                                    <div class=" w-50 ml-5 mb-3 embed-responsive embed-responsive-21by9">
+                                        <video class="embed-responsive embed-responsive-21by9"  controls>
+                                            <source src="{{ asset('bundles/memes/uploads/'~comment.media) }}">
+                                        </video>
+
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
         {% endif %}
@@ -57,12 +81,12 @@
 
                 <div class="container">
                     <div class="btn-group rounded">
-                        <button id="positive" onclick="" value="{{ view.slug }}" class="btn btn-danger"><i class="fas fa-thumbs-up m-1"></i></button>
-                        <button class="mr-1">{{ view.ratePositive is null ? 0 : view.ratePositive }}</button>
+                        <button id="positive" onclick="ratePositive('{{ path('rate-positive') }}','{{ view.slug }}',this)" value="{{ view.slug }}" class="btn btn-danger"><i class="fas fa-thumbs-up m-1"></i></button>
+                        <button id="counter" class="mr-1">{{ view.ratePositive is null ? 0 : view.ratePositive }}</button>
                     </div>
                     <div class="btn-group">
-                        <button id="negative" value="{{ view.slug }}" class="btn btn-info"><i class="fas fa-thumbs-down m-1"></i></button>
-                        <button>{{ view.rateNegative is null ? 0 : view.rateNegative }}</button>
+                        <button id="negative" onclick="rateNegative('{{ path('rate-negative') }}','{{ view.slug }}',this)" value="{{ view.slug }}" class="btn btn-info"><i class="fas fa-thumbs-down m-1"></i></button>
+                        <button id="counter">{{ view.rateNegative is null ? 0 : view.rateNegative }}</button>
                     </div>
                     <p class="text-white">{{ view.date|date("d/m/Y") }}</p>
                 </div>
@@ -72,6 +96,7 @@
                     <p class="text-white">Join to discussion</p>
                     <form id="form" action="{{ path('add-comment') }}" method="post" enctype="multipart/form-data" class="form-group">
                         <input type="hidden" id="slug" name="slug" value="{{ view.slug }}" >
+                        <label class="text-white" for="comment">Comment</label>
                         <textarea name="comment" id="comment" cols="50" rows="3" class="form-control"></textarea>
                         <label for="author" class="text-white mt-1">Nickname:</label>
                         <input id="author" type="text" name="author" class="form-control w-25">
@@ -89,10 +114,21 @@
                 <div id="content-comments">
                     <div id="append"></div>
                     {% for comment in view.comments %}
-                        <div id="comments" class="container text-white">
+                        <div id="comments" class="container text-white mt-3">
                             <div class="media-body">
                                 <h5>{{ comment.author }}</h5>
-                                <p>{{ comment.content }}</p>
+                                <p class="ml-5">{{ comment.content }}</p>
+                                {% if(comment.type == "mem") %}
+                                    <img class="w-50 ml-5 mb-3" src="{{  asset('bundles/memes/uploads/'~comment.media) }}">
+                                {% endif %}
+                                {% if(comment.type == "video") %}
+                                    <div class=" w-50 ml-5 mb-3 embed-responsive embed-responsive-21by9">
+                                        <video class="embed-responsive embed-responsive-21by9"  controls>
+                                            <source src="{{ asset('bundles/memes/uploads/'~comment.media) }}">
+                                        </video>
+                                    </div>
+                                {% endif %}
+
                             </div>
                         </div>
                     {% endfor %}
@@ -132,6 +168,7 @@
                     <div id="alerts"></div>
                     <form id="form" action="{{ path('add-comment') }}" method="post" class="form-group">
                         <input type="hidden" name="slug" id="slug" value="{{ view.slug }}" >
+                        <label class="text-white" for="comment">Comment</label>
                         <textarea name="comment" id="comment" cols="50" rows="3" class="form-control"></textarea>
                         <label for="author" class="text-white mt-1">Nickname:</label>
                         <input id="author"  type="text" name="author" class="form-control w-25">
@@ -143,10 +180,22 @@
                 <div id="content-comments">
                     <div id="append"></div>
                     {% for comment in view.comments %}
-                        <div id="comments" class="container text-white">
+                        <div id="comments" class="container text-white mt-3">
                             <div class="media-body">
                                 <h5>{{ comment.author }}</h5>
-                                <p>{{ comment.content }}</p>
+                                <p class="ml-5">{{ comment.content }}</p>
+                                {% if(comment.type == "mem") %}
+                                    <img class="w-50 ml-5 mb-3" src="{{  asset('bundles/memes/uploads/'~comment.media) }}">
+                                {% endif %}
+                                {% if(comment.type == "video") %}
+                                    <div class=" w-50 ml-5 mb-3 embed-responsive embed-responsive-21by9">
+                                        <video class="embed-responsive embed-responsive-21by9"  controls>
+                                            <source src="{{ asset('bundles/memes/uploads/'~comment.media) }}">
+                                        </video>
+
+                                    </div>
+                                {% endif %}
+
                             </div>
                         </div>
                     {% endfor %}
@@ -189,8 +238,6 @@
             formData.append("comment",this.comment);
             formData.append('author',this.author);
             formData.append('slug',this.slug);
-
-            console.log(formData.valueOf());
             $.ajax({
                 type: "POST",
                 url: "{{ path('add-comment') }}",
@@ -202,9 +249,22 @@
                     return myXhr;
                 },
                 success: function (data) {
-                    // your callback here
+                    console.log(data);
+
+                    if (data['type'] == "mem"){
+                        $("#append").append('<div id="comments" class="container text-white"><div class="media-body"><h5>'+ data['author'] +'</h5><p>' + data['comment'] + '</p><img class="w-50 ml-5 mb-3" src="../../../web/bundles/memes/uploads/'+ data['media'] +'" ></div></div>').show('slow');
+                        $("#comment").empty();
+                        $("#author").empty();
+                    }
+
+                    if(data['type'] == "video"){
+                        $("#append").append('<div id="comments" class="container text-white"><div class="media-body"><h5>'+ data['author'] +'</h5><p>' + data['comment'] + '</p><div class="w-50 ml-5 mb-3 embed-responsive embed-responsive-21by9"><video class="embed-responsive embed-responsive-21by9" controls><source src="../../../web/bundles/memes/uploads/'+ data['media'] +'" ></video></div></div>').show('slow');
+                        $("#comment").empty();
+                        $("#author").empty();
+                    }
                 },
                 error: function (error) {
+                    console.log(error);
                     $("#alerts").empty();
                     $("#alerts").append("<div class='alert alert-danger'>We can't add this file</div>");
                 },

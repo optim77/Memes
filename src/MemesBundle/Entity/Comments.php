@@ -266,10 +266,10 @@ class Comments
             $file = $this->getMediaFile();
             $extension = explode('/',$file['type']);
             $this->media = $imageName.'.'.$extension[1];
-            if($extension == 'mp4' || $extension == 'ogg' || $extension == 'webm'){
+            if($extension[1] == 'mp4' || $extension[1] == 'ogg' || $extension[1] == 'webm'){
                 $this->setType('video');
             }
-            if($extension == 'jpeg' || $extension == 'gif' || $extension == 'png'){
+            if($extension[1] == 'jpeg' || $extension[1] == 'gif' || $extension[1] == 'png'){
                 $this->setType('mem');
             }
 
