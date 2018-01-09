@@ -332,7 +332,23 @@
                     var file = document.getElementById('file').files[0];
                     var upload = new Upload(file,comment,author,slug);
                     // maby check size or type here with upload.getSize() and upload.getType()
-                    upload.doUpload();
+                    var type = upload.getType();
+                    var size = upload.getSize();
+                    console.log(type);
+                    alert(type);
+                    alert(size);
+                    if(type == 'image/jpeg' || type == 'image/gif' || type == 'image/png' || type == 'video/mp4' || type == 'video/ogg' || type == 'image/webm' ){
+                        if (size < 200000){
+                            upload.doUpload();
+                        }else{
+                            $("#alerts").empty();
+                            $("#alerts").append("<div class='alert alert-danger'>Size of the file is too</div>");
+                        }
+                    }else{
+                        $("#alerts").empty();
+                        $("#alerts").append("<div class='alert alert-danger'>Wrong file format</div>");
+                    }
+
 //                });
 
             }
